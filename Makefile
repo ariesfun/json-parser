@@ -1,7 +1,7 @@
 # 自定义环境变量
 CC = g++ # 指定编译器
 
-CFLAGS = -I include -std=c++11 -Wall # 指定头文件目录及启用警告
+CFLAGS = -I include -std=c++11 # 指定头文件目录及使用c++11标准
 CFILES = $(shell find src -name "*.cpp") # 搜索所有的源文件
 OBJS = $(CFILES:.cpp=.o) # 所有的目标文件
 TARGET = main # 最终生成目标
