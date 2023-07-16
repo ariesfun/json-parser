@@ -73,7 +73,7 @@ Json::Json(const Json &other)
             m_value.m_bool = other.m_value.m_bool;
             break;
         case json_int:
-            m_value.m_int = other.git.m_int;
+            m_value.m_int = other.m_value.m_int;
             break;
         case json_double:
             m_value.m_double = other.m_value.m_double;
