@@ -32,8 +32,14 @@ int main() {
     // const std::string &s = arr[3];
     // std::cout << arr.str() << std::endl; // 输出数组内容
 
-
-
+    // test03
+    // 设计对象类型的api
+    Json obj;
+    obj["bool"] = true;
+    obj["int"] = 123;
+    obj["double"] = 1.23;
+    obj["str"] = "hello world"; 
+    std::cout << obj.str() << std::endl;
 
     std::cout << "Debug Test" << std::endl;
     return 0;

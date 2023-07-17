@@ -65,32 +65,7 @@ Json::Json(Type type) : m_type(type)
 // 拷贝构造
 Json::Json(const Json &other)
 {
-    m_type = other.m_type;
-    switch(m_type) // 由类型来初始化值
-    {
-        case json_null:
-            break;
-        case json_bool:
-            m_value.m_bool = other.m_value.m_bool;
-            break;
-        case json_int:
-            m_value.m_int = other.m_value.m_int;
-            break;
-        case json_double:
-            m_value.m_double = other.m_value.m_double;
-            break;
-        case json_string:                              // 浅拷贝，只存储指针
-            m_value.m_string = other.m_value.m_string;  
-            break;
-        case json_array:
-            m_value.m_array = other.m_value.m_array;
-            break;
-        case json_object:
-            m_value.m_object = other.m_value.m_object;
-            break;
-        default:
-            break;
-    }
+    copy(other);
 }
 
 // 四个基本类型的运算符重载
@@ -147,6 +122,7 @@ Json & Json::operator [] (int index)
 void Json::append(const Json& other)
 {
     if(m_type != json_array) {
+        clear(); // 对原数组进行清理
         m_type = json_array;
         m_value.m_array = new std::vector<Json>(); // 创建数组
     }
@@ -203,4 +179,91 @@ std::string Json::str() const
             break;
     }
     return ss.str();
+}
+
+Json & Json::operator [] (const char* key) // C和C++风格的字符串
+{
+    std::string name(key);
+    return (*(this)) [name]; // 调用下面的实现
+}
+
+// 用json["key"]的语法来访问和操作Json对象的属性
+Json & Json::operator [] (const std::string &key) 
+{
+    if(m_type != json_object) { // 类型不是对象
+        clear();
+        m_type = json_object; // 转为对象类型
+        m_value.m_object = new std::map<std::string, Json>();
+    }
+    return (*(m_value.m_object))[key]; // 获取map的内容
+}
+
+void Json::operator = (const Json &other) // 类似拷贝构造函数
+{
+    clear(); // 先清理内存，再拷贝
+    copy(other);
+}
+
+void Json::copy (const Json &other) // 拷贝的公共函数
+{
+    m_type = other.m_type;
+    switch(m_type) // 由类型来初始化值
+    {
+        case json_null:
+            break;
+        case json_bool:
+            m_value.m_bool = other.m_value.m_bool;
+            break;
+        case json_int:
+            m_value.m_int = other.m_value.m_int;
+            break;
+        case json_double:
+            m_value.m_double = other.m_value.m_double;
+            break;
+        case json_string:                              // 浅拷贝，只存储指针
+            m_value.m_string = other.m_value.m_string; // 处理内存泄露，对原来指针申请的动态内存进行释放 
+            break;
+        case json_array:
+            m_value.m_array = other.m_value.m_array;
+            break;
+        case json_object:
+            m_value.m_object = other.m_value.m_object;
+            break;
+        default:
+            break;
+    }
+}
+
+void Json::clear()
+{
+    switch(m_type)
+    {
+        case json_null:
+            break;
+        case json_bool:
+            m_value.m_bool = false;
+            break;
+        case json_int:
+            m_value.m_int = 0;
+            break;
+        case json_double:
+            m_value.m_double = 0.0;
+            break;
+        case json_string:
+            delete m_value.m_string;
+            break;
+        case json_array:
+            for(auto it = (m_value.m_array)->begin(); it != (m_value.m_array)->end(); it++) {
+                it->clear(); // 递归调用
+            }
+            delete m_value.m_array; // 数组里的内容可能也涉及动态内存分配，要先一步释放
+            break;
+        case json_object:
+            for(auto it = (m_value.m_object)->begin(); it != (m_value.m_object)->end(); it++) {
+                (it->second).clear(); 
+            }
+            delete m_value.m_object;
+            break;
+        m_type = json_null; // 类型设为空
+    }
 }

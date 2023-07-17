@@ -43,6 +43,15 @@ namespace json { // 避免冲突，使用二级命名空间
             // 以字符串形式，返回Json的具体内容
             std::string str() const;
 
+            // 重载中括号，按指定传入的字符串类型来添加值
+            Json & operator [] (const char* key); // C和C++风格的字符串
+            Json & operator [] (const std::string &key);
+            // 重载赋值运算符
+            void operator = (const Json &other);
+            void copy(const Json &other); // 封装重复使用的代码
+            // 释放原先创建的地址空间
+            void clear();
+
         private:
             union Value // 联合体定义值，占用内存会更小(取决于double)
             {
