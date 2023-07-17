@@ -30,6 +30,19 @@ namespace json { // 避免冲突，使用二级命名空间
             Json(Type type); // 根据枚举类型来构造
             Json(const Json &other); //拷贝构造
 
+            // 基本类型的运算符重载
+            operator bool();
+            operator int();
+            operator double();
+            operator std::string();
+
+            // 重载中括号，添加数据
+            Json & operator [] (int index);
+            void append(const Json& other);
+
+            // 以字符串形式，返回Json的具体内容
+            std::string str() const;
+
         private:
             union Value // 联合体定义值，占用内存会更小(取决于double)
             {
