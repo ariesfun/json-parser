@@ -204,6 +204,38 @@ void Json::operator = (const Json &other) // 类似拷贝构造函数
     copy(other);
 }
 
+bool Json::operator == (const Json &other)
+{
+    if(m_type != other.m_type) {
+        return false;
+    }
+    switch (m_type)
+    {
+        case json_null:
+            return true;
+        case json_bool:
+            return m_value.m_bool == other.m_value.m_bool;
+        case json_int:
+            return m_value.m_int == other.m_value.m_int;
+        case json_double:
+            return m_value.m_double == other.m_value.m_double;
+        case json_string:
+            return *(m_value.m_string) == *(other.m_value.m_string); // 比较两字符串指针内容
+        case json_array:
+            return m_value.m_array == other.m_value.m_array;
+        case json_object:
+            return m_value.m_object == other.m_value.m_object;
+        default:
+            break;
+    }
+    return false;
+}
+
+bool Json::operator != (const Json &other)
+{
+    return !((*this) == other); // 利用前面的相等重载取反
+}
+
 void Json::copy (const Json &other) // 拷贝的公共函数
 {
     m_type = other.m_type;
@@ -266,4 +298,99 @@ void Json::clear()
             break;
         m_type = json_null; // 类型设为空
     }
+}
+
+// 四种显示的类型转换
+bool Json::asBool() const
+{
+    if(m_type != json_bool) {
+        throw new std::logic_error("type error, not bool value");
+    }
+    return m_value.m_bool;
+}
+
+int Json::asInt() const
+{
+    if(m_type != json_int) {
+        throw new std::logic_error("type error, not int value");
+    }
+    return m_value.m_int;
+
+}
+
+double Json::asDouble() const
+{
+    if(m_type != json_double) {
+        throw new std::logic_error("type error, not double value");
+    }
+    return m_value.m_double;
+}
+
+std::string Json::asString() const
+{
+    if(m_type != json_string) {
+        throw new std::logic_error("type error, not string value");
+    }
+    return *(m_value.m_string); // 返回字符串的内容
+}
+
+// 判断数组里有没有某个索引
+bool Json::has(int index)
+{
+    if(m_type != json_array) {
+        return false;
+    }
+    int size = (m_value.m_array)->size();
+    return (index >= 0 && index < size);
+}
+
+// 判断对象里有没有某个key
+bool Json::has(const char* key)
+{
+    std::string name(key);
+    return has(name); // 调用下面函数的实现
+}
+
+bool Json::has(const std::string &key)
+{
+    if(m_type != json_object) {
+        return false;
+    }
+    // m_value.m_object是一个指向json对象的指针
+    // find(key)返回一个迭代器，指向键值为key的元素; end()返回一个迭代器，指向对象的末尾位置
+    // 不等，说明找到了对应的键值key
+    return ((m_value.m_object)->find(key) != m_value.m_object->end());
+}
+
+// 按下标及key来删除元素
+void Json::remove(int index) // 移除数组元素
+{
+    if(m_type != json_array) {
+        return;
+    }
+    int size = (m_value.m_array)->size();
+    if(index < 0 || index >=size) {
+        return;
+    }
+    // 下标在范围内，获取到要删除元素的迭代器，用erase()删掉
+    // 需要先清理内存
+    (m_value.m_array)->at(index).clear();
+    (m_value.m_array)->erase((m_value.m_array)->begin() + index); 
+}
+
+void Json::remove(const char* key) // 移除对象元素
+{
+    std::string name(key);
+    return remove(name); // 调用下面的函数实现
+}
+
+void Json::remove(const std::string &key)
+{
+    auto it = m_value.m_object->find(key);
+    if(it == m_value.m_object->end()) {
+        return;
+    }
+    // 对应的键key存在，先清理内存，再删除
+    (*(m_value.m_object))[key].clear();
+    (m_value.m_object)->erase(key);
 }
