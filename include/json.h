@@ -52,6 +52,15 @@ namespace json { // 避免冲突，使用二级命名空间
             // 释放原先创建的地址空间
             void clear();
 
+            // 对数组中的内容遍历
+            typedef std::vector<Json>::iterator iterator;
+            iterator begin() { // 定义两个迭代器
+                return (m_value.m_array)->begin();
+            }
+            iterator end() {
+                return (m_value.m_array)->end();
+            }
+
         private:
             union Value // 联合体定义值，占用内存会更小(取决于double)
             {
