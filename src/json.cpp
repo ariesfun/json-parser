@@ -1,4 +1,5 @@
 #include "json.h"
+#include "parser.h"
 #include <sstream>
 
 using namespace yazi::json; 
@@ -394,3 +395,10 @@ void Json::remove(const std::string &key)
     (*(m_value.m_object))[key].clear();
     (m_value.m_object)->erase(key);
 }
+
+ void Json::parse(const std::string &str)
+ {
+    Parser p;
+    p.load(str);
+    *this = p.parse(); // 将解析后的结果传给Json本身
+ }

@@ -92,6 +92,9 @@ namespace json { // 避免冲突，使用二级命名空间
             void remove(const char* key);
             void remove(const std::string &key);
 
+            // 解析传入的字符串
+            void parse(const std::string &str);
+
         private:
             union Value // 联合体定义值，占用内存会更小(取决于double)
             {

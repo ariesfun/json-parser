@@ -91,7 +91,12 @@ int main() {
     // // arr是作为obj的一个成员变量存，当调用obj.clear()时，会自动触发arr的析构函数来释放其占用的内存
     // obj.clear(); // 只用释放这一个即可
 
-    
+
+    const std::string &str = "\"hello\"";
+    Json res; 
+    res.parse(str); // 将解析后的内容放入json对应的类型中
+    std::cout << res.str() << std::endl;
+
 
     std::cout << "Debug Test" << std::endl;
     return 0;
