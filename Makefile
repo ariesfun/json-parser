@@ -8,13 +8,13 @@ CFILES = $(shell find ./ -name "*.cpp")
 OBJS = $(CFILES:.cpp=.o) # 所有的目标文件
 TARGET = main # 最终生成目标
 
-# 生成可执行文件
-$(TARGET): $(OBJS)
-	$(CC) $(OBJS) -o $(TARGET)
-
 # 编译并生成目标文件
 %.o : %.cpp
 	$(CC) -c $(CFLAGS) $< -o $@
+
+# 生成可执行文件
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET)
 
 # 清理生成的文件
 .PHONY: clean # 伪目标
