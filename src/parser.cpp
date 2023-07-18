@@ -100,7 +100,7 @@ Json Parser::parse_number() // int和double类型
     if(!isdigit(m_str[m_idx])) { // 不是数字时，抛异常
         throw std::logic_error("parser number error");
     }
-    while(isdigit(m_str[m_idx])) { // 数字和字符数字？？？
+    while(isdigit(m_str[m_idx])) { // 字符数字判断
         m_idx++;
     }
     // 没有遇到小数点，认为它是整数
