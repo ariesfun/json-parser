@@ -26,7 +26,7 @@ namespace json { // 避免冲突，使用二级命名空间
             Json(int value);
             Json(double value);
             Json(const char* value); // C格式字符串
-            Json(const std::string& value); // C++格式字符串
+            Json(const std::string &value); // C++格式字符串
             Json(Type type); // 根据枚举类型来构造
             Json(const Json &other); //拷贝构造
 
@@ -38,7 +38,7 @@ namespace json { // 避免冲突，使用二级命名空间
 
             // 重载中括号，添加数据
             Json & operator [] (int index);
-            void append(const Json& other);
+            void append(const Json &other);
 
             // 以字符串形式，返回Json的具体内容
             std::string str() const;

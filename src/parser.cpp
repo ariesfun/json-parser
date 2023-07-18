@@ -15,7 +15,7 @@ void Parser::load(const std::string &str)
 // 忽略空白字符
 void Parser::skip_white_space()
 {
-    // char ch = m_str[m_idx]; 错误写法，循环后下标会变
+    // char ch = m_str[m_idx]; 用ch判断错误写法，循环后下标会变
     while(m_str[m_idx] == ' ' || m_str[m_idx] == '\n' || m_str[m_idx] == '\r' || m_str[m_idx] == '\t') {
         m_idx++;
     }
@@ -65,7 +65,7 @@ Json Parser::parse() // 解析核心
             break;
     }
     // 其他字符时，抛出异常
-    throw new std::logic_error("unexpected char error");    
+    throw std::logic_error("unexpected char error");    
 }
 
 // 解析不同类型的内容
@@ -75,7 +75,7 @@ Json Parser::parse_null()
         m_idx += 4;
         return Json();
     }
-    throw new std::logic_error("parser null error");
+    throw std::logic_error("parser null error");
 }   
 
 Json Parser::parse_bool()
@@ -88,7 +88,7 @@ Json Parser::parse_bool()
         m_idx += 5;
         return Json(false);
     }
-    throw new std::logic_error("parser bool error");
+    throw std::logic_error("parser bool error");
 }
 
 Json Parser::parse_number() // int和double类型
@@ -98,9 +98,9 @@ Json Parser::parse_number() // int和double类型
         m_idx++;
     }
     if(!isdigit(m_str[m_idx])) { // 不是数字时，抛异常
-        throw new std::logic_error("parser number error");
+        throw std::logic_error("parser number error");
     }
-    while(isdigit(m_str[m_idx])) {
+    while(isdigit(m_str[m_idx])) { // 数字和字符数字？？？
         m_idx++;
     }
     // 没有遇到小数点，认为它是整数
@@ -113,7 +113,7 @@ Json Parser::parse_number() // int和double类型
 
     m_idx++; // 遇到小数点，先跳过
     if(!isdigit(m_str[m_idx])) { // 不是数字时
-        throw new std::logic_error("parser number error");
+        throw std::logic_error("parser number error");
     }
     // 认为是浮点数
     while(isdigit(m_str[m_idx])) {
@@ -167,7 +167,8 @@ std::string Parser::parse_string()
                 default:
                     break;
             }
-        } else { // 非转义
+        } 
+        else { // 非转义
             res += ch;
         }
     }

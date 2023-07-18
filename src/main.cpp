@@ -92,7 +92,7 @@ int main() {
     // obj.clear(); // 只用释放这一个即可
 
 
-    const std::string &str = "\"hello\"";
+    const std::string &str = "\"hhhhhhhh\"";
     Json res; 
     res.parse(str); // 将解析后的内容放入json对应的类型中
     std::cout << res.str() << std::endl;

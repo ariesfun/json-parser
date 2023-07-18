@@ -28,7 +28,7 @@ Json::Json(const char* value) : m_type(json_string)
 }
 
 // C++风格字符串
-Json::Json(const std::string& value) 
+Json::Json(const std::string& value) : m_type(json_string)
 {
     m_value.m_string = new std::string(value);
 }
@@ -73,7 +73,7 @@ Json::Json(const Json &other)
 Json::operator bool() 
 {
     if(m_type != json_bool) {
-        throw new std::logic_error("type error, not bool value");
+        throw std::logic_error("type error, not bool value");
     }
     return m_value.m_bool;
 }
@@ -81,7 +81,7 @@ Json::operator bool()
 Json::operator int()
 {
     if(m_type != json_int) {
-        throw new std::logic_error("type error, not int value");
+        throw std::logic_error("type error, not int value");
     }
     return m_value.m_int;
 }
@@ -89,7 +89,7 @@ Json::operator int()
 Json::operator double()
 {
     if(m_type != json_double) {
-        throw new std::logic_error("type error, not double value");
+        throw std::logic_error("type error, not double value");
     }
     return m_value.m_double;
 }
@@ -97,7 +97,7 @@ Json::operator double()
 Json::operator std::string()
 {
     if(m_type != json_string) {
-        throw new std::logic_error("type error, not string value");
+        throw std::logic_error("type error, not string value");
     }
     return *(m_value.m_string); // 返回字符串指针的内容
 }
@@ -109,7 +109,7 @@ Json & Json::operator [] (int index)
         m_value.m_array = new std::vector<Json>(); // 创建数组
     }
     if(index < 0) {
-        throw new std::logic_error("array[] index < 0");
+        throw std::logic_error("array[] index < 0");
     }
     int size = (m_value.m_array)->size(); // 获取当前元素个数
     if(index >= size) { // 下标超过当前值，需要扩容将值赋空
@@ -305,7 +305,7 @@ void Json::clear()
 bool Json::asBool() const
 {
     if(m_type != json_bool) {
-        throw new std::logic_error("type error, not bool value");
+        throw std::logic_error("type error, not bool value");
     }
     return m_value.m_bool;
 }
@@ -313,7 +313,7 @@ bool Json::asBool() const
 int Json::asInt() const
 {
     if(m_type != json_int) {
-        throw new std::logic_error("type error, not int value");
+        throw std::logic_error("type error, not int value");
     }
     return m_value.m_int;
 
@@ -322,7 +322,7 @@ int Json::asInt() const
 double Json::asDouble() const
 {
     if(m_type != json_double) {
-        throw new std::logic_error("type error, not double value");
+        throw std::logic_error("type error, not double value");
     }
     return m_value.m_double;
 }
@@ -330,7 +330,7 @@ double Json::asDouble() const
 std::string Json::asString() const
 {
     if(m_type != json_string) {
-        throw new std::logic_error("type error, not string value");
+        throw std::logic_error("type error, not string value");
     }
     return *(m_value.m_string); // 返回字符串的内容
 }
