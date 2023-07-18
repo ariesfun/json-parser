@@ -102,17 +102,17 @@ int main() {
 
 
     // test07，解析数组
-    // const std::string &str = "[1, 3, 9, \"a\", 1.23, null, true, false, 999.000999]";
+    // const std::string &str = "[1,3, 9, \"a\", 1.23, null, true, false, 999.000999]";
     // Json res; 
     // res.parse(str); 
     // std::cout << res.str() << std::endl;
 
 
     // test08，解析对象(键值对)
-    // const std::string &str = "{\"a\":1,\"b\":2, \"c\":false, \"d\":[1, 3, 9, \"a\", 1.23, null, true, false, 999.000999]}";
-    // Json res; 
-    // res.parse(str); 
-    // std::cout << res.str() << std::endl;
+    const std::string &str = "{\"a\":1,\"b\":2,\"c\":false,\"d\":[1,3,9,\"a\", 1.23, null,true, false, 999.000999]}";
+    Json res; 
+    res.parse(str); 
+    std::cout << res.str() << std::endl;
 
 
     // test09，解析json文件

@@ -196,6 +196,9 @@ Json Parser::parse_array()
         if(ch != ',') { // 下个字符是否含逗号
             throw std::logic_error("parse array error");
         }
+        else { // 当前字符是逗号，但下标已经后移动，需回退（可以让","后紧跟数字）
+            m_idx--;
+        }
         m_idx++;
     }
     return arr;
@@ -227,6 +230,9 @@ Json Parser::parse_object()
         }
         if(ch != ',') {
             throw std::logic_error("parse object error");
+        }
+        else {
+            m_idx--;
         }
         m_idx++;
     }
