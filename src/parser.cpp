@@ -61,6 +61,9 @@ Json Parser::parse() // 解析核心
             return parse_array();
         case '{':
             return parse_object();
+        case ' ':
+            m_idx++;
+            break;
         default:
             break;
     }
@@ -175,12 +178,57 @@ std::string Parser::parse_string()
     return res;
 }
 
+// 解析数组类型
 Json Parser::parse_array()
 {
-    return Json();
+    Json arr(Json::json_array); // 声明一个数组类型的Json对象
+    char ch = get_next_token();
+    if(ch == ']') {
+        return arr; // 空数组类型
+    }
+    m_idx--; // 回退
+    while(true) {
+        arr.append(parse()); // 递归解析
+        ch = get_next_token();
+        if(ch == ']') {
+            break;
+        }
+        if(ch != ',') { // 下个字符是否含逗号
+            throw std::logic_error("parse array error");
+        }
+        m_idx++;
+    }
+    return arr;
 }
 
 Json Parser::parse_object()
 {
-    return Json();
+    Json obj(Json::json_object);
+    char ch = get_next_token();
+    if(ch == '}') {
+        return obj; // 空对象
+    }
+    m_idx--;
+    while(true) {
+        ch = get_next_token();
+        if(ch != '"') {
+            throw std::logic_error("parse object error");
+        }
+        std::string key = parse_string(); // 解析键key
+
+        ch = get_next_token();
+        if(ch != ':') {
+            throw std::logic_error("parse object error");
+        }
+        obj[key] = parse(); //  递归解析值value
+        ch = get_next_token();
+        if(ch == '}') {
+            break;
+        }
+        if(ch != ',') {
+            throw std::logic_error("parse object error");
+        }
+        m_idx++;
+    }
+    return obj;
 }
