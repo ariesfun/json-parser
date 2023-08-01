@@ -2,7 +2,7 @@
 #include "parser.h"
 #include <sstream>
 
-using namespace yazi::json; 
+using namespace swift::json; 
 
 Json::Json() : m_type(json_null) {}
 
@@ -21,20 +21,18 @@ Json::Json(double value) : m_type(json_double)
     m_value.m_double = value;
 }
 
-// C风格字符串(存指针，涉及内存管理)
 Json::Json(const char* value) : m_type(json_string)
 {
     m_value.m_string = new std::string(value);
 }
 
-// C++风格字符串
 Json::Json(const std::string& value) : m_type(json_string)
 {
     m_value.m_string = new std::string(value);
 }
 
 // 根据枚举类型来构造
-Json::Json(Type type) : m_type(type)
+Json::Json(Type type) : m_type(type) 
 {
     switch(type) // 由类型来初始化值
     {
@@ -63,13 +61,13 @@ Json::Json(Type type) : m_type(type)
     }
 }
 
-// 拷贝构造
-Json::Json(const Json &other)
+// 显式拷贝构造
+Json::Json(const Json &other) 
 {
     copy(other);
 }
 
-// 四个基本类型的运算符重载
+// 四个基本类型的运算符重载：bool、int、double、string 
 Json::operator bool() 
 {
     if(m_type != json_bool) {
@@ -102,7 +100,7 @@ Json::operator std::string()
     return *(m_value.m_string); // 返回字符串指针的内容
 }
 
-Json & Json::operator [] (int index)
+Json& Json::operator [] (int index)
 {
     if(m_type != json_array) {
         m_type = json_array;
@@ -120,7 +118,7 @@ Json & Json::operator [] (int index)
     return (m_value.m_array)->at(index); // 返回数组对应索引的具体值
 }
 
-void Json::append(const Json& other)
+void Json::append(const Json &other)
 {
     if(m_type != json_array) {
         clear(); // 对原数组进行清理
@@ -182,14 +180,14 @@ std::string Json::str() const
     return ss.str();
 }
 
-Json & Json::operator [] (const char* key) // C和C++风格的字符串
+Json& Json::operator [] (const char* key) // C和C++风格的字符串
 {
     std::string name(key);
     return (*(this)) [name]; // 调用下面的实现
 }
 
 // 用json["key"]的语法来访问和操作Json对象的属性
-Json & Json::operator [] (const std::string &key) 
+Json& Json::operator [] (const std::string &key) 
 {
     if(m_type != json_object) { // 类型不是对象
         clear();
@@ -237,7 +235,7 @@ bool Json::operator != (const Json &other)
     return !((*this) == other); // 利用前面的相等重载取反
 }
 
-void Json::copy (const Json &other) // 拷贝的公共函数
+void Json::copy (const Json &other) // 进行拷贝的公共函数
 {
     m_type = other.m_type;
     switch(m_type) // 由类型来初始化值
@@ -374,15 +372,15 @@ void Json::remove(int index) // 移除数组元素
         return;
     }
     // 下标在范围内，获取到要删除元素的迭代器，用erase()删掉
-    // 需要先清理内存
-    (m_value.m_array)->at(index).clear();
+    (m_value.m_array)->at(index).clear(); // 需要先清理内存
     (m_value.m_array)->erase((m_value.m_array)->begin() + index); 
 }
 
-void Json::remove(const char* key) // 移除对象元素
+// 移除对象元素
+void Json::remove(const char* key) 
 {
     std::string name(key);
-    return remove(name); // 调用下面的函数实现
+    return remove(name); // 调用下面的remove函数的实现
 }
 
 void Json::remove(const std::string &key)

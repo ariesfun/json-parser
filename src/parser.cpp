@@ -1,8 +1,7 @@
 #include "parser.h"
 
-using namespace yazi::json;
+using namespace swift::json;
 
-// 默认构造
 Parser::Parser() : m_str(""), m_idx(0) {}
 
 // 加载字符串
@@ -30,7 +29,8 @@ char Parser::get_next_token()
     return ch; // 等价于 return m_str[m_index++];
 }
 
-Json Parser::parse() // 解析核心
+// 解析核心
+Json Parser::parse() 
 {
     char ch = get_next_token();
     switch(ch)
@@ -67,8 +67,7 @@ Json Parser::parse() // 解析核心
         default:
             break;
     }
-    // 其他字符时，抛出异常
-    throw std::logic_error("unexpected char error");    
+    throw std::logic_error("unexpected char error");  // 是其他字符时，抛出异常   
 }
 
 // 解析不同类型的内容
@@ -108,8 +107,7 @@ Json Parser::parse_number() // int和double类型
     }
     // 没有遇到小数点，认为它是整数
     if(m_str[m_idx] != '.') { 
-        // 字符串转整数，c_str()返回指向C字符串的指针常量 
-        // 将从pos开始的子字符串转换为整数，并返回对应的Json对象
+        // 字符串转整数，将从pos开始的子字符串转换为整数，并返回对应的Json对象
         int n = std::atoi(m_str.c_str() + pos); // pos：可选参数，指向存储第一个无效字符位置的指针
         return Json(n);
     }
@@ -223,7 +221,7 @@ Json Parser::parse_object()
         if(ch != ':') {
             throw std::logic_error("parse object error");
         }
-        obj[key] = parse(); //  递归解析值value
+        obj[key] = parse(); // 递归解析值value
         ch = get_next_token();
         if(ch == '}') {
             break;

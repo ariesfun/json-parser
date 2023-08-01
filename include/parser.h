@@ -2,15 +2,14 @@
 #include <string>
 #include "json.h"
 
-namespace yazi {
+namespace swift {
 namespace json {
 
     class Parser
     {
         public:
-            // 默认构造函数
             Parser(); 
-
+            
             // 加载即将要解析的串
             void load(const std::string &str);
 
@@ -32,8 +31,7 @@ namespace json {
             Json parse_object();
 
         private:
-            std::string m_str; // 解析的内容
-            int m_idx; // 解析时的索引
+            std::string m_str; // 解析的内容 及对应的索引
     };
     
 }    

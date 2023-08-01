@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
-#include <vector> // 存数组
+#include <vector>
 #include <map> // 存对象(键值对)
 
-namespace yazi {
-namespace json { // 避免冲突，使用二级命名空间
+namespace swift {
+namespace json {
 
     class Json
     {
@@ -20,7 +20,6 @@ namespace json { // 避免冲突，使用二级命名空间
                 json_object
             };
 
-            // 构造函数
             Json();
             Json(bool value);
             Json(int value);
@@ -37,15 +36,15 @@ namespace json { // 避免冲突，使用二级命名空间
             operator std::string();
 
             // 重载中括号，添加数据
-            Json & operator [] (int index);
+            Json& operator [] (int index);
             void append(const Json &other);
 
             // 以字符串形式，返回Json的具体内容
             std::string str() const;
 
             // 重载中括号，按指定传入的字符串类型来添加值
-            Json & operator [] (const char* key); // C和C++风格的字符串
-            Json & operator [] (const std::string &key);
+            Json& operator [] (const char* key); // C和C++风格的字符串
+            Json& operator [] (const std::string &key);
             // 重载赋值及等号运算符
             void operator = (const Json &other);
             bool operator == (const Json &other);
@@ -109,6 +108,6 @@ namespace json { // 避免冲突，使用二级命名空间
             Type m_type; // 两个字段
             Value m_value;
     };
-
+    
 }    
 }
