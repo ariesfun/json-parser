@@ -31,7 +31,8 @@ namespace json {
             Json parse_object();
 
         private:
-            std::string m_str; // 解析的内容 及对应的索引
+            std::string m_str; // 解析的内容及对应的索引
+            int m_idx;
     };
     
 }    
