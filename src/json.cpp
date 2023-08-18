@@ -1,7 +1,6 @@
 #include "json.h"
 #include "parser.h"
 #include <sstream>
-
 using namespace swift::json; 
 
 Json::Json() : m_type(json_null) {}
@@ -26,7 +25,7 @@ Json::Json(const char* value) : m_type(json_string)
     m_value.m_string = new std::string(value);
 }
 
-Json::Json(const std::string& value) : m_type(json_string)
+Json::Json(const std::string &value) : m_type(json_string)
 {
     m_value.m_string = new std::string(value);
 }
@@ -100,7 +99,7 @@ Json::operator std::string()
     return *(m_value.m_string); // 返回字符串指针的内容
 }
 
-Json& Json::operator [] (int index)
+Json &Json::operator [] (int index)
 {
     if(m_type != json_array) {
         m_type = json_array;
@@ -180,14 +179,14 @@ std::string Json::str() const
     return ss.str();
 }
 
-Json& Json::operator [] (const char* key) // C和C++风格的字符串
+Json &Json::operator [] (const char* key) // C和C++风格的字符串
 {
     std::string name(key);
     return (*(this)) [name]; // 调用下面的实现
 }
 
 // 用json["key"]的语法来访问和操作Json对象的属性
-Json& Json::operator [] (const std::string &key) 
+Json &Json::operator [] (const std::string &key) 
 {
     if(m_type != json_object) { // 类型不是对象
         clear();
@@ -314,7 +313,6 @@ int Json::asInt() const
         throw std::logic_error("type error, not int value");
     }
     return m_value.m_int;
-
 }
 
 double Json::asDouble() const

@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 # 添加头文件
 include_directories(./include)
 
-# file(GLOB_RECURSE SOURCES "src/*.cpp")
+# 添加源文件
+aux_source_directory(./src DIR_SRCS)
 
 # 需编译的源文件
-add_executable(main ${SOURCES} main.cpp)
+add_executable(main main.cpp ${DIR_SRCS})

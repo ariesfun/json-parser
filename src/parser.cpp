@@ -1,5 +1,4 @@
 #include "parser.h"
-
 using namespace swift::json;
 
 Parser::Parser() : m_str(""), m_idx(0) {}
@@ -14,7 +13,7 @@ void Parser::load(const std::string &str)
 // 忽略空白字符
 void Parser::skip_white_space()
 {
-    // char ch = m_str[m_idx]; 用ch判断错误写法，循环后下标会变
+    // char ch = m_str[m_idx]; // 直接用ch判断错误写法，循环后下标会变
     while(m_str[m_idx] == ' ' || m_str[m_idx] == '\n' || m_str[m_idx] == '\r' || m_str[m_idx] == '\t') {
         m_idx++;
     }
@@ -26,7 +25,7 @@ char Parser::get_next_token()
     skip_white_space();
     char ch = m_str[m_idx];
     m_idx++;
-    return ch; // 等价于 return m_str[m_index++];
+    return ch; // 后三行等价于 return m_str[m_index++];
 }
 
 // 解析核心
@@ -61,10 +60,8 @@ Json Parser::parse()
             return parse_array();
         case '{':
             return parse_object();
-        case ' ':
-            m_idx++;
-            break;
         default:
+            std::cout << "Unexpected char is : " << static_cast<int>(ch) << std::endl; // debug测试
             break;
     }
     throw std::logic_error("unexpected char error");  // 是其他字符时，抛出异常   
