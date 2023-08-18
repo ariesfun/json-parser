@@ -8,7 +8,7 @@ int main()
 {
     // 解析json文件测试
     try {
-        std::ifstream fin("../json_data/json_test.json"); // 打开文件
+        std::ifstream fin("./json_data/json_test.json"); // 打开文件
         if (!fin.is_open()) {
             throw std::runtime_error("Failed to open the file.");
         }

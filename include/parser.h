@@ -9,24 +9,19 @@ namespace json {
 class Parser {
 public:
     Parser(); 
-    
-    // 加载即将要解析的串
-    void load(const std::string &str);
-
-    // 解析核心实现，返回Json类型
-    Json parse();
+    void load_string(const std::string &str);  // 加载将要解析的串
+    Json parse(); // 解析核心，返回Json类型
 
 private:
-    // 忽略空白字符
+    // 忽略空白字符和获取下一个字符
     void skip_white_space();
-    // 获取下一个字符
     char get_next_token();
 
     // 解析不同类型的内容
     Json parse_null();
     Json parse_bool();
-    Json parse_number(); // int和double类型
-    std::string parse_string(); // 返回字符串类型
+    Json parse_number(); // int and double
+    std::string parse_string();
     Json parse_array();
     Json parse_object();
 

@@ -20,7 +20,7 @@
 
 使用C++11编写实现了一个 **独立、跨平台、简单易用且高性能** 的 `Json` 文件解析器。
 
-其中核心解析部分代码仅 **200** 多行，解析性能比常见的 `jsoncpp`, `blohmann` 等要高很多。
+提供了友好的API，其中解析核心部分`parser.cpp`代码仅 **200 来行**，解析性能比常见的 `jsoncpp`, `blohmann` 等要高很多。
 
 ----
 
@@ -28,7 +28,7 @@
 
 面向对象设计，函数重载，运算符重载，标准模板库(STL)使用:vector、map、ifstream、stringstream;
 
-内存管理，enum、union的巧用，以及动态库的制作。
+内存管理，移动语义，enum、union的巧用，以及动态库的制作等 。
 
 ----
 
@@ -41,6 +41,27 @@ IDE: `VSCode 1.8.02`
 ----
 
 ### 二、跨平台使用
+代码可在`Linux`，`Windows`，`MacOS`上运行。
+
+项目目录树如下，
+```shell
+.
+├── CMakeLists.txt
+├── include
+│   ├── json.h
+│   └── parser.h
+├── json_data
+│   ├── json_test1.json
+│   └── json_test.json
+├── main.cpp
+├── Makefile
+├── README.md
+└── src
+    ├── json.cpp
+    └── parser.cpp
+
+3 directories, 10 files
+```
 
 #### 解析测试
 
@@ -114,10 +135,4 @@ xxx
 
 [【文档 C++ 编写简易JSON解析器】](https://zhuanlan.zhihu.com/p/476271291)
 
-
 ----
-
-
-
-
-
