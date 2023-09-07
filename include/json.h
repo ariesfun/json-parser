@@ -28,6 +28,7 @@ public:
     Json(const std::string &value); 
     Json(Type type); // 根据枚举类型来构造
     Json(const Json &other); // 拷贝构造
+    Json(Json&& other); // 移动构造
 
     Json &operator [] (int index);  // 数组初始化操作，按下标取值
     void append(const Json &other); // 数组添加数据

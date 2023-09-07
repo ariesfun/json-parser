@@ -1,6 +1,7 @@
 #include "json.h"
 #include "parser.h"
 #include <sstream>
+
 using namespace swift::json; 
 
 Json::Json() : m_type(json_null) {}
@@ -39,6 +40,12 @@ Json::Json(const Json &other) : m_type(json_null)
     copy(other);
 }
 
+Json::Json(Json&& other)
+{
+    swap(other);
+    
+}
+
 Json::Json(Type type) : m_type(type) 
 {
     switch(type) // 由类型来初始化值
@@ -71,17 +78,14 @@ Json::Json(Type type) : m_type(type)
 Json &Json::operator [] (int index)
 {
     if(m_type != json_array) {
-        m_type = json_array;
-        m_value.m_array = new std::vector<Json>(); // 创建数组
+        throw std::logic_error("not array type");
     }
     if(index < 0) {
-        throw std::logic_error("array[] index < 0");
+        throw std::logic_error("array index < 0 error");
     }
     int size = (m_value.m_array)->size(); // 获取当前元素个数
     if(index >= size) { // 下标超过当前值，需要扩容将值赋空
-        for(int i = size; i <= index; i++) {
-            (m_value.m_array)->push_back(Json());
-        }
+        throw std::logic_error("array index out of range");
     }
     return (m_value.m_array)->at(index); // 返回数组对应索引的具体值
 }
@@ -141,7 +145,7 @@ Json::operator std::string()
 Json &Json::operator [] (const char* key) // C和C++风格的字符串
 {
     std::string name(key);
-    return (*(this)) [name]; // 调用下面的实现
+    return (*this)[name]; // 调用下面的实现
 }
 
 Json &Json::operator [] (const std::string &key) // 用json["key"]的语法来访问和操作Json对象的属性
@@ -206,7 +210,6 @@ void Json::copy (const Json &other) // 封装复用代码，进行拷贝的公�
     switch(m_type) // 由类型来初始化值
     {
         case json_null:
-            break;
         case json_bool:
         case json_int:
         case json_double:
@@ -477,7 +480,7 @@ void Json::remove(const std::string &key)
     if(it == m_value.m_object->end()) {
         return;
     }
-    (*(m_value.m_object))[key].clear(); // 对应的键key存在，先清理内存，再删除
+    it->second.clear(); // 对应的键key存在，先清理内存，再删除
     (m_value.m_object)->erase(key);
 }
 
@@ -515,6 +518,7 @@ int Json::size() const // 获取json中的数组或对象的个数
     default:
         break;
     }
+    throw std::logic_error("size value type error!");
     return 0;
 }
 

@@ -1,4 +1,5 @@
 #include "parser.h"
+
 using namespace swift::json;
 
 Parser::Parser() : m_str(""), m_idx(0) {}
@@ -219,10 +220,6 @@ Json Parser::parse_object()
         if(ch != ',') {
             throw std::logic_error("parse object error");
         }
-        else {
-            m_idx--;
-        }
-        m_idx++;
     }
     return obj;
 }
