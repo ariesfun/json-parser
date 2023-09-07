@@ -1,4 +1,4 @@
-## C++ JSON文件解析器
+## C++ JSON 解析器
 
 ## 目录
 
@@ -6,42 +6,46 @@
 
 二、跨平台使用
 
-三、动态库使用
+三、动静态库使用
 
 四、解析性能测试
 
-五、项目开发参考资料
+五、参考资料
 
 ----
 
 ### 一、项目简介
 
-#### 01.介绍
+#### 01. 介绍
 
-使用C++11编写实现了一个 **独立、跨平台、简单易用且高性能** 的 `Json` 文件解析器。
+使用 `C++11` 编写实现了一个 **独立、跨平台、简单易用且高性能** 的 `Json` 文件格式解析器;
 
-提供了友好的API，其中解析核心部分`parser.cpp`代码仅 **200 来行**，解析性能比常见的 `jsoncpp`, `blohmann` 等要高很多。
+该解析器提供了友好的API，支持序列化和反序列化操作，其中解析核心部分的实现 `parser.cpp` 代码仅有 **200 来行**;
 
-----
-
-#### 02.涉及的主要技术点
-
-面向对象设计，函数重载，运算符重载，标准模板库(STL)使用:vector、map、ifstream、stringstream;
-
-内存管理，移动语义，enum、union的巧用，以及动态库的制作等 。
+而且解析性能比常见的 `jsoncpp`, `blohmann` 等有所提升。
 
 ----
 
-#### 03.开发环境及工具
+#### 02. 涉及的主要技术点
+
+面向对象设计，函数重载，运算符重载，STL的使用: `vector、map、ifstream、stringstream` 等;
+
+以及内存管理，移动语义，`enum`、`union`的巧用，以及动态库的制作等。
+
+----
+
+#### 03. 开发环境及工具
 
 Linux: `Ubuntu 18.04.6 LTS`
 
 IDE: `VSCode 1.8.02`
 
+GCC: `9.4.0`, GNU Make `4.2.1`, CMake `3.27.0-rc3`
+
 ----
 
 ### 二、跨平台使用
-代码可在`Linux`，`Windows`，`MacOS`上运行。
+代码可在 `Linux`，`Windows`，`MacOS` 上运行。
 
 项目目录树如下，
 ```shell
@@ -56,18 +60,28 @@ IDE: `VSCode 1.8.02`
 ├── main.cpp
 ├── Makefile
 ├── README.md
-└── src
-    ├── json.cpp
-    └── parser.cpp
+├── src
+│   ├── json.cpp
+│   └── parser.cpp
+└── tools_libs
+    ├── dynamic
+    │   ├── json.h
+    │   └── libmyjson.so
+    ├── lib_dynamic
+    ├── lib_static
+    ├── libs_test.cpp
+    └── static
+        ├── json.h
+        └── libmyjson.a
 
-3 directories, 10 files
+6 directories, 17 files
 ```
 
 #### 解析测试
 
 单个json文件解析测试，并截取其中部分内容输出
-测试的json数据，放在`json_data`目录下：
-尝试解析`json_test.json`文件，输出结果如下：
+测试的json数据，放在 `json_data` 目录下：
+尝试解析 `json_test.json` 文件，输出结果如下：
 
 **使用CMake编译项目:**
 ```shell
@@ -85,12 +99,14 @@ Your bilibili username: Ariesfun
 Current level: 5
 ```
 
-ps: 后续有时间，可以完善为网页版的在线解析工具
 
 ----
 
-### 三、动态库使用
-xxx
+### 三、动静态库使用
+
+静态库和动态库的打包文件放在了 `tools_lib` 文件夹中，并分别使用两种库做了使用测试；
+
+将代码打包成库文件形式，让代码有更好的封装性和安全性，你可以很方便的将该JSON解析器集成到其他项目中。
 
 ----
 
@@ -103,31 +119,72 @@ xxx
 
 - 测试对象
 
-    [`nlohmann`](), [`jsoncpp`](), [`rapidjson`](), [`json-parser`]()
+    [`json-parser`]()，[`nlohmann`](), [`jsoncpp`](), [`rapidjson`](), 
 
 - 测试环境
 
     硬件环境: 笔电 `Win11 x64`; CPU `AMD Ryzen 7 6800H`; 内存 `32G`
 
-    编译环境: `VSCode 1.8.02` , `MinGW-W64 GCC-8.1.0` 
+    编译环境: `Ubuntu 18.04 LTS` , `VSCode 1.8.02` , `GCC 9.4.0` 
 
 - 测试环节代码，`test.cpp`
 
     ```c++
     // 测试部分的核心代码
+        try {
+        std::ifstream fin("../json_data/json_test.json");
+        if (!fin.is_open()) {
+            throw std::runtime_error("Failed to open the file.");
+        }
+        std::stringstream ss;
+        ss << fin.rdbuf();
+        const std::string& data = ss.str();
 
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        int start_sec = tv.tv_sec;
+        int start_usec = tv.tv_usec;
+        const int max = 100000;
+        for(int i = 0; i < max; i++) { // 循环解析10w次，计算平均值
+            Json json;
+            json.parse(data);
+        }
+        gettimeofday(&tv, NULL);
+        int end_sec = tv.tv_sec;
+        int end_usec = tv.tv_usec;
+        double time_diff = (end_sec - start_sec) * 1000000 + (end_usec - start_usec);
+        std::cout << time_diff / 1000 / max << "ms" << std::endl;
+        
+        }catch (const std::exception &ex) {
+        std::cerr << "Exception: " << ex.what() << std::endl;
+    }
     ```
 - 测试结果
 
-    这里放解析时间对比的表格
+    常见JSON解析库耗时比较, 测试跑在linux虚拟机环境上，与实际可能略有差异，仅供参考
+
+    | 项目        | 解析平均耗时（ms） |
+    | ----------- | ------------------ |
+    | nlohmann    | 0.2361              |
+    | jsoncpp     | 0.1572              |
+    | rapidjson   | 0.0562              |
+    | json-parser | 0.1409              |
 
 - 解析性能分析
 
-    xxx
+    相比于普通的拷贝构造函数和深拷贝（Json::copy）方法，移动构造函数和移动语义的优势在于性能和资源管理上：
+
+    **性能**: 移动构造函数通常比拷贝构造函数更快，因为它只是简单地将资源的所有权从一个对象转移到另一个对象，而不需要进行深拷贝或复制大量数据。
+
+    **资源管理**: 移动构造函数允许在资源管理上更高效地操作，特别是对于动态分配的内存或其他资源。它避免了不必要的数据复制，减少了内存分配和释放的开销。
+
+    总的来说，移动构造函数和移动语义适用于那些可以转移资源所有权而不需要复制的情况，可以提高代码的性能和资源管理效率。
+    
+    这对于处理大型数据结构或使用动态内存分配的情况尤其有用。而普通的拷贝构造函数和深拷贝适用于需要创建对象的独立副本的情况。
 
 ---
 
-### 五、项目开发参考资料
+### 五、参考资料
 
 [【视频 C++ JSON解析器】](https://www.bilibili.com/video/BV1TP411p7cC/?share_source=copy_web&vd_source=64863a79f6edd334371cb7b41a0df347)
 
