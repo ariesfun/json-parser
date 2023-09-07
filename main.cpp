@@ -49,6 +49,8 @@ int main()
 
     */
 
+    /* 
+    // 解析性能测试
     try {
         std::ifstream fin("../json_data/json_test.json");
         if (!fin.is_open()) {
@@ -76,6 +78,7 @@ int main()
         }catch (const std::exception &ex) {
         std::cerr << "Exception: " << ex.what() << std::endl;
     }
+    */
 
     return 0;
 }
